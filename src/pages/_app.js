@@ -1,5 +1,17 @@
-import '@/styles/globals.css'
+import Head from "next/head";
+import "../styles/globals.css";
+import Navbar from "../../components/Navbar";
 
-export default function App({ Component, pageProps }) {
-  return <Component {...pageProps} />
+function MyApp({ Component, pageProps }) {
+  return (
+    <>
+      <Head>
+        <title>My Next.js App</title>
+      </Head>
+      <Navbar />
+      <Component {...pageProps} />
+    </>
+  );
 }
+
+export default MyApp;
