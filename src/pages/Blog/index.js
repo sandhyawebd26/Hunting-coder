@@ -3,20 +3,24 @@ import React, { useEffect, useState } from "react";
 
 // step 1 : Collect all the files from blogData directory
 // step 2: Iterate through the blogs and show them
-const Blog = () => {
-  const [blogs, setblogs] = useState(null);
+const Blog = (props) => {
+  console.log("props",props)
+  const [blogs, setblogs] = useState(props.allBlogs);
 
   const getAllBlogs = () => {
-    fetch("/api/blogs")
-      .then(async (a) => {
-        let reponseGet = await a.json();
-        return reponseGet;
-      })
-      .then((res) => {
-        console.log("blogs", res);
-        setblogs(res);
-        console.log(res);
-      });
+
+    // Fetch blogs data from myProps instead of "/api/blogs"
+    // setblogs(myProps);
+    // fetch("/api/blogs")
+    //   .then(async (a) => {
+    //     let reponseGet = await a.json();
+    //     return reponseGet;
+    //   })
+    //   .then((res) => {
+    //     console.log("blogs", res);
+    //     setblogs(res);
+    //     console.log(res);
+    //   });
   };
 
   useEffect(() => {
@@ -41,7 +45,7 @@ const Blog = () => {
                     {data.title}
                   </h3>
                 </Link>
-                <p className="text-[#666]">{data.description.substr(0,200)}</p>
+                <p className="text-[#666]">{data.description.substr(0, 200)}</p>
               </div>
             );
           })}
@@ -50,5 +54,15 @@ const Blog = () => {
     </>
   );
 };
+
+export async function getServerSideProps(props) {
+  let data = await fetch("http://localhost:3000/api/blogs");
+  let allBlogs = await data.json();
+
+  // Pass data to the page via props
+  return {
+    props: {allBlogs},
+  };
+}
 
 export default Blog;

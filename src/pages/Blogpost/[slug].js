@@ -1,31 +1,33 @@
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 
-const SingleBlog = () => {
-  const [blog, setBlog] = useState(null);
-  const router = useRouter();
+const SingleBlog = (props) => {
+
+  const [blog, setBlog] = useState(props.Blog);
+  // const router = useRouter();
 
   const getBlogBySlug = () => {
-    const { slug } = router.query; // Use the slug from router.query, not the function variable
 
-    fetch(`/api/${slug}`) // Access the API route through the /api path
-      .then(async (response) => {
-        let responseData = await response.json();
-        return responseData;
-      })
-      .then((data) => {
-        console.log("blog", data);
-        setBlog(data);
-      })
-      .catch((error) => {
-        console.error("Error fetching blog:", error);
-      });
+    // const { slug } = router.query; // Use the slug from router.query, not the function variable
+
+    // fetch(`/api/${slug}`) // Access the API route through the /api path
+    //   .then(async (response) => {
+    //     let responseData = await response.json();
+    //     return responseData;
+    //   })
+    //   .then((data) => {
+    //     console.log("blog", data);
+    //     setBlog(data);
+    //   })
+    //   .catch((error) => {
+    //     console.error("Error fetching blog:", error);
+    //   });
   };
 
-  useEffect(() => {
-    console.log("useEffect is running");
-    getBlogBySlug();
-  }, [router.query.slug]); // Listen for changes to the slug in router.query
+  // useEffect(() => {
+  //   console.log("useEffect is running");
+  //   getBlogBySlug();
+  // }, [router.query.slug]); // Listen for changes to the slug in router.query
 
   if (!blog) {
     return <div>Loading...</div>;
@@ -43,6 +45,20 @@ const SingleBlog = () => {
     </>
   );
 };
+
+export async function getServerSideProps(context) {
+  // console.log(context.query.slug)
+
+  const { slug } = context.query;
+  let res = await fetch(`http://localhost:3000/api/${slug}`) // Access the API route through the /api path
+  let Blog =await  res.json()
+  console.log(Blog)
+  // Pass data to the page via props
+  return {
+    props: { Blog },
+  };
+}
+
 
 export default SingleBlog;
 
